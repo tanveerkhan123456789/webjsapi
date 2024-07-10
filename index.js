@@ -1,7 +1,6 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode');
 const express = require('express');
-const puppeteer = require('puppeteer');
 
 const app = express();
 const port = 3000;
@@ -9,19 +8,16 @@ const port = 3000;
 let qrCodeData = '';
 
 // Initialize WhatsApp client
-const client = new Client({
-    puppeteer: {
-        headless: true, // Set to true if you want to run in headless mode
-        args: ['--no-sandbox', '--disable-setuid-sandbox'], // Required for some Linux servers
-        executablePath: puppeteer.executablePath(),
-    },
-    authStrategy: new LocalAuth()
-});
+const client = new Client();
 
 client.on('qr', async (qr) => {
     try {
-        qrCodeData = await qrcode.toString(qr, { type: 'svg' });
+        qrCodeData = await qrcode.toString(qr, { type: 'svg', errorCorrectionLevel: 'L', margin: 1, scale: 4 });
         console.log('QR code generated');
+        setTimeout(() => {
+            qrCodeData = ''; // Clear QR code data after 20 seconds
+            console.log('QR code data cleared');
+        }, 20000); // 20 seconds delay
     } catch (err) {
         console.error('Error generating QR code', err);
     }
