@@ -12,7 +12,8 @@ const client = new Client();
 
 client.on('qr', async (qr) => {
     try {
-        qrCodeData = await qrcode.toString(qr, { type: 'svg', errorCorrectionLevel: 'L', margin: 1, scale: 4 });
+        qrCodeData = await qrcode.toString(qr, { type: 'svg', errorCorrectionLevel: 'L', margin: 1 });
+        qrCodeData = qrCodeData.replace('<svg', '<svg style="width: 200px; height: 200px;"'); // Adjust size as needed
         console.log('QR code generated');
         setTimeout(() => {
             qrCodeData = ''; // Clear QR code data after 20 seconds
